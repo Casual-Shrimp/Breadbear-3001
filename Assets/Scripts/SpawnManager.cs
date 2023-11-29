@@ -6,12 +6,16 @@ public class SpawnManager : MonoBehaviour
 {
 
     //Time specific
-    private float _respawnTime;
-    private float _respawnRate = 3.6f;
+    private float _respawnTimeEnemy;
+    private float _respawnRateEnemy = 3.6f;
+    private float _spawnRateHealth = 10;
+    private float _spawnTimeHealth;
 
     //Component related
     [SerializeField]
     private GameObject _enemy;
+    [SerializeField]
+    private GameObject _healthPack;
 
 
     void Start()
@@ -21,12 +25,34 @@ public class SpawnManager : MonoBehaviour
 
     void Update()
     {
-        if(Time.time > _respawnTime)
+        enemySpawn();
+        healthSpawn();
+
+    }
+
+    void enemySpawn()
+    {
+        
+        if(Time.time > _respawnTimeEnemy)
         {
             transform.position = new Vector2(Random.Range(-7, 7), transform.position.y);
             Instantiate(_enemy, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);
-            _respawnTime = Time.time + _respawnRate;
+            _respawnTimeEnemy = Time.time + _respawnRateEnemy;
         }
+    }
 
+    void healthSpawn()
+    {
+        if(Time.time > _spawnTimeHealth)
+        {
+            Debug.Log("Object spawned");
+            Debug.Log(_spawnRateHealth);
+            Instantiate(_healthPack, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);
+            _spawnRateHealth = Random.Range(10, 15);
+            _spawnTimeHealth = Time.time + _spawnRateHealth;
+            
+            
+        }
+        
     }
 }
