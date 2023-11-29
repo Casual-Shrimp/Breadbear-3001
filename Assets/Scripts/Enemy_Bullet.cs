@@ -6,7 +6,12 @@ using UnityEngine;
 public class Enemy_Bullet : MonoBehaviour
 {
 
-    private float _bulletSpeed = 10.0f;
+    void Start()
+    {
+        transform.Rotate(new Vector3(0, 0, 180));
+    }
+
+    private float _bulletSpeed = -10.0f;
     
     void Update()
     {
