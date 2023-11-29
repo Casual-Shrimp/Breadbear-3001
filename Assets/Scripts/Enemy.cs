@@ -41,7 +41,6 @@ public class Enemy : MonoBehaviour
             hit.Play();
             Destroy(other.gameObject);
             _health = _health -= 1.0f;
-            Debug.Log("Bullet hit Enemy");
         }
     }
 
