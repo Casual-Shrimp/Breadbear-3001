@@ -8,12 +8,12 @@ public class Enemy : MonoBehaviour
     
     //Just Variables
     private float _health = 10.0f;
-    private float _fallSpeed = 0.3f;
+    private float _fallSpeed = 1.0f;
 
     //Time specific variables
     private float _currentTime;
     private float _downTime;
-    private float _fireRate = 1.0f;
+    private float _fireRate = 1.7f;
     private float _allowedFire;
 
     //Game Component specific

@@ -132,6 +132,12 @@ public class Dave_Move : MonoBehaviour
             Destroy(other.gameObject);
             _health -= 1;
         }
+
+        if(other.tag == "Enemy")
+        {
+            _health -= 1;
+            Destroy(other.gameObject);
+        }
     }
 
     
