@@ -20,6 +20,8 @@ public class SpawnManager : MonoBehaviour
 
     void Start()
     {
+        _spawnTimeHealth = 30;
+        _respawnTimeEnemy = 4;
         transform.position = new Vector2(0, 5.5f);
     }
 
