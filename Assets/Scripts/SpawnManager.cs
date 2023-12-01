@@ -7,7 +7,7 @@ public class SpawnManager : MonoBehaviour
 
     //Time specific
     private float _respawnTimeEnemy;
-    private float _respawnRateEnemy = 3.6f;
+    private float _respawnRateEnemy;
     private float _spawnRateHealth = 10;
     private float _spawnTimeHealth;
 
@@ -37,6 +37,7 @@ public class SpawnManager : MonoBehaviour
         {
             transform.position = new Vector2(Random.Range(-7, 7), transform.position.y);
             Instantiate(_enemy, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);
+            _respawnRateEnemy = Random.Range(2, 4);
             _respawnTimeEnemy = Time.time + _respawnRateEnemy;
         }
     }
@@ -45,10 +46,8 @@ public class SpawnManager : MonoBehaviour
     {
         if(Time.time > _spawnTimeHealth)
         {
-            Debug.Log("Object spawned");
-            Debug.Log(_spawnRateHealth);
             Instantiate(_healthPack, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);
-            _spawnRateHealth = Random.Range(10, 15);
+            _spawnRateHealth = Random.Range(20, 40);
             _spawnTimeHealth = Time.time + _spawnRateHealth;
             
             

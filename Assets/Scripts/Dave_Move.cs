@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -11,8 +12,8 @@ public class Dave_Move : MonoBehaviour
     //Just Variables
     private float _daveSpeed = 1000f;
     private float _maxSpeed = 50f; 
-    private float _health = 5f;
-
+    [SerializeField]
+    [Range(0, 10)]private int _health = 10;
     //Variables for game components 
     [SerializeField]
     private GameObject _Aubergine;
@@ -136,6 +137,12 @@ public class Dave_Move : MonoBehaviour
         if(other.tag == "Enemy")
         {
             _health -= 1;
+            Destroy(other.gameObject);
+        }
+
+        if(other.tag == "HealthPack")
+        {
+            _health += 3;
             Destroy(other.gameObject);
         }
     }

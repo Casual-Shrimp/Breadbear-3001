@@ -392,6 +392,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6041109089cb3744c8a2d0b541c43db0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _health: 10
   _Aubergine: {fileID: 4973695824406294564, guid: 8e781eecdc54ed94088d1b6a87719b9b, type: 3}
   _Hand: {fileID: 809206675}
 --- !u!50 &1714768375
