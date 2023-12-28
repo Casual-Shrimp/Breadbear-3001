@@ -12,81 +12,72 @@ public class DaveMove : MonoBehaviour
     //Just Variables
     readonly float _daveSpeed = 1000f;
     readonly float _maxSpeed = 50f; 
-    [SerializeField]
-    [Range(0, 10)]private int health = 10;
+    [Range(0, 10)]readonly int _maxHealth = 10;
+    private int _currentHealth;
     //Variables for game components 
     [SerializeField]
-    private GameObject Aubergine;
+    private GameObject aubergine;
     [SerializeField]
-    private GameObject _Hand;
-    private Rigidbody2D _Dave;
+    private GameObject hand;
+    private Rigidbody2D _dave;
+    public HealthBar healthBar;
 
     //Variables for Time
-    private float _passedTime = 0f;
-    private float _fireRate = 0.13f;
+    private float _passedTime;
+    public float fireRate = 0.13f;
 
     void Start()
     {
         transform.Rotate(0, 0, 0);
         transform.position = new Vector3(0,-4,0);
-        _Dave = GetComponent<Rigidbody2D>();
-        if(_Dave.velocity.x > _maxSpeed)
+        _dave = GetComponent<Rigidbody2D>();
+        if(_dave.velocity.x > _maxSpeed)
         {
-            _Dave.velocity = _Dave.velocity.normalized * _maxSpeed;
+            _dave.velocity = _dave.velocity.normalized * _maxSpeed;
         }
+        _currentHealth = _maxHealth;
+        healthBar.SetMaxHealth(_maxHealth);
     }
 
     void Update()
     {     
-        daveRotation();
-        daveShoot();
-        daveHealth();
+        DaveRotation();
+        DaveShoot();
+        DaveHealth();
     }
     private void FixedUpdate() 
     {
-        daveMoveSide();
-        daveMoveUp();
+        DaveMoveSide();
     }
 
-    void daveMoveSide()
+       private void DaveMoveSide()
     {
 
         if(Input.GetKey(KeyCode.A) | Input.GetKey(KeyCode.LeftArrow))
         {
-            _Dave.AddForce(Vector2.left * _daveSpeed * Time.deltaTime);
+            _dave.AddForce(new Vector2( -1 * _daveSpeed * Time.deltaTime, 0));
         }
         
         if(Input.GetKey(KeyCode.D) | Input.GetKey(KeyCode.RightArrow))
         {
-            _Dave.AddForce(Vector2.right * _daveSpeed * Time.deltaTime);
+            _dave.AddForce(new Vector2( 1 * _daveSpeed * Time.deltaTime, 0));
         }   
 
         if (transform.position.x >= 8.5)
         {
             transform.position = new Vector3(8.5f, transform.position.y, 0);
-            _Dave.velocity = Vector3.zero;
+            _dave.velocity = Vector3.zero;
 
         }
         else if (transform.position.x <=-8.5)
         {
             transform.position = new Vector3(-8.5f, transform.position.y, 0);
-            _Dave.velocity = Vector3.zero;
+            _dave.velocity = Vector3.zero;
         }
     }
-        
-    void daveMoveUp()
-    {
-         if(Input.GetKey(KeyCode.W) | Input.GetKey(KeyCode.UpArrow))
-        {
-            _Dave.AddForce(Vector2.up * _daveSpeed * Time.deltaTime);
-        }
-        if(Input.GetKey(KeyCode.S) | Input.GetKey(KeyCode.DownArrow))
-        {
-            _Dave.AddForce(Vector2.down * _daveSpeed * Time.deltaTime);
-        }
-    }
+    
      
-    void daveRotation()
+    private void DaveRotation()
     {
         if(Input.GetKeyDown(KeyCode.A) | Input.GetKeyDown(KeyCode.LeftArrow))
         {
@@ -108,42 +99,45 @@ public class DaveMove : MonoBehaviour
     }
 
 
-    void daveShoot()
+    private void DaveShoot()
     {
         if(Input.GetKey(KeyCode.Space) && Time.time > _passedTime)
         {
-            Instantiate(Aubergine, new Vector2(_Hand.transform.position.x, _Hand.transform.position.y), Quaternion.identity);
-            _passedTime = Time.time + _fireRate;
+            Instantiate(aubergine, new Vector2(hand.transform.position.x, hand.transform.position.y), Quaternion.identity);
+            _passedTime = Time.time + fireRate;
         }
 
     }
 
-    void daveHealth()
+    private void DaveHealth()
     {
-        if(health < 0)
+        if(_currentHealth <= 0)
         {
             Destroy(this.gameObject);
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag == "Enemy_Bullet")
+        if(other.CompareTag("Enemy_Bullet"))
         {
             Destroy(other.gameObject);
-            health -= 1;
+            _currentHealth -= 1;
+            healthBar.SetHealth(_currentHealth);
         }
 
-        if(other.tag == "Enemy")
+        if(other.CompareTag("Enemy"))
         {
-            health -= 1;
-            Destroy(other.gameObject);
+            _currentHealth -= 1;
+            healthBar.SetHealth(_currentHealth);
         }
 
-        if(other.tag == "HealthPack")
+        if(other.CompareTag("HealthPack"))
         {
-            health += 3;
+            _currentHealth += 3;
+            healthBar.SetHealth(_currentHealth);
             Destroy(other.gameObject);
+            
         }
     }
 

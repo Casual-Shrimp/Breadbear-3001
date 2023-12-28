@@ -3,7 +3,9 @@ guid: 6041109089cb3744c8a2d0b541c43db0
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - aubergine: {fileID: 4973695824406294564, guid: 8e781eecdc54ed94088d1b6a87719b9b, type: 3}
+  - hand: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

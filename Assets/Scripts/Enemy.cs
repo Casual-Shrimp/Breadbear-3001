@@ -5,84 +5,101 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    
+
     //Just Variables
-    private float _health = 10.0f;
-    private float _fallSpeed = 1.0f;
+    public float health = 10.0f;
+    readonly float _fallSpeed = 1.0f;
 
     //Time specific variables
     private float _currentTime;
     private float _downTime;
-    private float _fireRate = 1.7f;
+    readonly float _fireRate = 1.7f;
     private float _allowedFire;
 
     //Game Component specific
-    private Rigidbody2D rb;
-    [SerializeField] private GameObject _bullet;
+    private Rigidbody2D _rb;
+    [SerializeField] private GameObject bullet;
     public AudioSource hit;
+    private Transform _trans;
+    public EnemyChild enemyChild;
+    public GameObject explosionParticle;
+    
 
 
 
-    void Start()
+    private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        _rb = GetComponent<Rigidbody2D>();
+        _trans = GetComponent<Transform>();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        enemyAI();
+        EnemyAI();
+        Death();
     }
 
 
-    void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag == "Bullet")
+        if (other.CompareTag("Bullet"))
         {
             hit.Play();
             Destroy(other.gameObject);
-            _health = _health -= 1.0f;
+            health = --health;
+            Debug.Log(health);
+        }
+
+        if (other.CompareTag("Player"))
+        {
+            enemyChild.transform.SetParent(null);
+            Instantiate(explosionParticle, transform.position, Quaternion.identity);
+            Destroy(this.GameObject());
         }
     }
 
-    void enemyAI()
+    private void EnemyAI()
     {
         _currentTime += Time.deltaTime;
 
-        transform.Translate(Vector2.down * _fallSpeed *Time.deltaTime);
+        transform.Translate(new Vector2(0, -1 * Time.deltaTime * _fallSpeed));
 
-        if(_currentTime > _downTime)
+        if (_currentTime > _downTime)
         {
-            rb.AddForce(new Vector2(Random.Range(1000,1300) * (Random.Range(0,2)*2-1), 0) * Time.deltaTime);
-            rb.velocity = Vector2.zero;
+            _rb.AddForce(new Vector2(Random.Range(1000, 1300) * (Random.Range(0, 2) * 2 - 1), 0) * Time.deltaTime);
+            _rb.velocity = Vector2.zero;
             _downTime = Random.Range(1f, 3f);
             _currentTime = 0f;
         }
 
-        if(transform.position.x < -8.5)
+        if (transform.position.x < -8.5)
         {
-            rb.velocity = Vector2.zero;
-            transform.position = new Vector2(-8.5f, transform.position.y);
-            
+            _rb.velocity = Vector2.zero;
+            _trans.position = new Vector2(-8.5f, transform.position.y);
+
         }
-        if(transform.position.x > 8.5 )
+
+        if (transform.position.x > 8.5)
         {
-            rb.velocity = Vector2.zero;
-            transform.position = new Vector2(8.5f, transform.position.y);
+            _rb.velocity = Vector2.zero;
+            _trans.position = new Vector2(8.5f, transform.position.y);
         }
 
 
-        if(Time.time > _allowedFire)
+        if (Time.time > _allowedFire)
         {
-            Instantiate(_bullet, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);
+            Instantiate(bullet, new Vector2(transform.position.x, _trans.position.y), Quaternion.identity);
             _allowedFire = Time.time + _fireRate;
-        }
-
-
-                  if(_health < 1)
-        {   
-            Destroy(this.gameObject);
         }
     }
 
-   
+    public void Death()
+    {
+        if (health < 1)
+        {
+            enemyChild.transform.SetParent(null);
+            Instantiate(explosionParticle, transform.position, Quaternion.identity);
+            Destroy(this.GameObject());
+        }
+    }
 }

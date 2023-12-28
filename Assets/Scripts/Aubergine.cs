@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class Aubergine : MonoBehaviour
 {
-    private float _aubergineSpeed = 10.0f;
+    private readonly float _aubergineSpeed = 8.0f;
+    public GameObject impact;
     
     void Update()
     {
-       transform.Translate(Vector3.up * _aubergineSpeed * Time.deltaTime);
+       transform.Translate(new Vector3(0, 1 * _aubergineSpeed * Time.deltaTime,  0));
 
         if(transform.position.y > 6)
         {
@@ -18,9 +19,10 @@ public class Aubergine : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-                if(other.tag == "Enemy")
+        if(other.CompareTag("Enemy"))
         {
-                Destroy(this.gameObject);
+            Instantiate(impact, transform.position, Quaternion.identity);
+            Destroy(this.gameObject);
         }
     }
     
