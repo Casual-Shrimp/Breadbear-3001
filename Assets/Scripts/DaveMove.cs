@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEditor.Build;
 using UnityEngine;
@@ -12,8 +13,9 @@ public class DaveMove : MonoBehaviour
     //Just Variables
     readonly float _daveSpeed = 1000f;
     readonly float _maxSpeed = 50f; 
-    [Range(0, 10)]readonly int _maxHealth = 10;
+    [Range(0, 10)]private int _maxHealth = 10;
     private int _currentHealth;
+    public bool alreadyPlayed;
     //Variables for game components 
     [SerializeField]
     private GameObject aubergine;
@@ -21,6 +23,10 @@ public class DaveMove : MonoBehaviour
     private GameObject hand;
     private Rigidbody2D _dave;
     public HealthBar healthBar;
+    public DaveExplode daveExplode;
+    public GameObject exploEffect;
+    public GameObject daveHit;
+    public AudioSource hitSound;
 
     //Variables for Time
     private float _passedTime;
@@ -111,9 +117,16 @@ public class DaveMove : MonoBehaviour
 
     private void DaveHealth()
     {
-        if(_currentHealth <= 0)
+        if(_currentHealth < 1)
         {
+            daveExplode.transform.SetParent(null);
+            Instantiate(exploEffect, transform.position, Quaternion.identity);
             Destroy(this.gameObject);
+        }
+
+        if (_currentHealth > _maxHealth)
+        {
+            _currentHealth = 10;
         }
     }
 
@@ -124,22 +137,25 @@ public class DaveMove : MonoBehaviour
             Destroy(other.gameObject);
             _currentHealth -= 1;
             healthBar.SetHealth(_currentHealth);
+            hitSound.Play();
+            Instantiate(daveHit, transform.position, quaternion.identity);
         }
 
         if(other.CompareTag("Enemy"))
         {
             _currentHealth -= 1;
             healthBar.SetHealth(_currentHealth);
+            Instantiate(daveHit, transform.position, quaternion.identity);
         }
 
         if(other.CompareTag("HealthPack"))
         {
             _currentHealth += 3;
             healthBar.SetHealth(_currentHealth);
-            Destroy(other.gameObject);
             
         }
     }
+    
 
     
 }

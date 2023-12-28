@@ -47,7 +47,6 @@ public class Enemy : MonoBehaviour
             hit.Play();
             Destroy(other.gameObject);
             health = --health;
-            Debug.Log(health);
         }
 
         if (other.CompareTag("Player"))
